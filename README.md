@@ -217,9 +217,7 @@ git clone <your-repo-url>
 cd carbon-reality-project
 
 # Open the dashboard directly in your browser
-open Illusion_of_Climate_Progress_Dashboard.html
-# or on Windows:
-start Illusion_of_Climate_Progress_Dashboard.html
+Hosted HTML - index.html
 ```
 
 ### Option 3 - Rebuild the Data Pipeline
@@ -230,19 +228,14 @@ If you want to regenerate the master datasets from raw EIA files:
 - Python 3.10+
 - [uv](https://github.com/astral-sh/uv) package manager
 
-**Dependencies:** `pandas`, `numpy`
+**Dependencies:** `pandas`, `numpy` 
 
 ```bash
 # Install uv (if not already installed)
 curl -Lsf https://astral.sh/uv/install.sh | sh
 
-# Run the pipeline
-uv run --with pandas numpy python generator.py
 ```
 
-This will regenerate all master CSV files in the `data/` directory.
-
----
 
 ## 🚨 Key Takeaways
 
@@ -255,6 +248,16 @@ This will regenerate all master CSV files in the `data/` directory.
 ---
 
 ## 👥 Team
+
+| Name | Email |
+|------|-------|
+| Krithik Sharan Suresh Alagianayagi | mxnp0398@leeds.ac.uk |
+| Uday Kiran Reddy Mule | gfqr0053@leeds.ac.uk |
+| Haritej Karimisetti | tctn0725@leeds.ac.uk |
+| Asjad Moiz Khan | gfqs0308@leeds.ac.uk |
+
+**Programme:** MSc Data Science and Analytics
+**Institution:** University of Leeds
 
 Submitted to the **Data & AI Hackathon 2026**, University of Leeds
 Track 2: Earth, Environment & Climate
