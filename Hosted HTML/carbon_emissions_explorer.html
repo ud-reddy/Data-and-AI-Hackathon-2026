@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carbon & Energy Explorer</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="data.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono&family=DM+Sans&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #06090e; color: #f1f5f9; font-family: 'DM Sans', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        .serif-italic { font-family: 'DM Serif Display', serif; font-style: italic; }
+        .mono { font-family: 'DM Mono', monospace; }
+        .sidebar { background-color: #0d121c; border-right: 1px solid rgba(255, 255, 255, 0.08); width: 300px; }
+        .stat-card { background: #06090e; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 6px; }
+        .mode-tab { cursor: pointer; transition: 0.2s; border: 1px solid transparent; margin-bottom: 4px; }
+        .mode-tab.active { background: #06090e; border-color: rgba(255, 255, 255, 0.08); color: #f1f5f9; }
+        select { color-scheme: dark; }
+        input[type="range"] { height: 4px; border-radius: 2px; }
+    </style>
+</head>
+<body>
+
+    <header class="flex justify-between items-end px-8 py-6 border-b border-white/10" style="background: radial-gradient(circle at 10% 0%, #0d121c 0%, #06090e 80%);">
+        <div>
+            <h1 class="serif-italic text-2xl tracking-tight">Carbon & Energy Explorer</h1>
+            <p class="mono text-[10px] uppercase tracking-[0.2em] text-[#94a3b8] mt-1">Global Sustainability Insights</p>
+        </div>
+        <div class="mono text-[10px] text-[#94a3b8] text-right tracking-wider leading-relaxed">
+            DATA: IEA / EIA / OWID<br>CO₂ IN MT · ENERGY IN QBTU
+        </div>
+    </header>
+
+    <main class="flex flex-1 overflow-hidden">
+        <aside class="sidebar p-6 flex flex-col gap-6 overflow-y-auto">
+            <section>
+                <label class="mono text-[10px] text-[#94a3b8] tracking-widest uppercase block mb-3">Country</label>
+                <select id="countrySelect" class="w-full bg-[#06090e] border border-white/10 rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-[#38bdf8] outline-none">
+                </select>
+            </section>
+
+            <section>
+                <label class="mono text-[10px] text-[#94a3b8] tracking-widest uppercase block mb-1">Year</label>
+                <div id="yearDisplay" class="serif-italic text-5xl mb-2 text-[#facc15]">2010</div>
+                <input type="range" id="yearSlider" class="w-full accent-[#38bdf8]" min="1990" max="2023" value="2010">
+            </section>
+
+            <div class="h-[1px] bg-white/10"></div>
+
+            <section id="modeContainer">
+                <label class="mono text-[10px] text-[#94a3b8] tracking-widest uppercase block mb-3">View Mode</label>
+                <div data-mode="co2_vs_fossil" class="mode-tab active p-3 rounded-md flex items-center gap-3 text-xs text-[#94a3b8]">
+                    <span class="w-2 h-2 rounded-full" style="background:#ef4444"></span> CO₂ vs Fossil Fuels
+                </div>
+                <div data-mode="co2_vs_renew" class="mode-tab p-3 rounded-md flex items-center gap-3 text-xs text-[#94a3b8]">
+                    <span class="w-2 h-2 rounded-full" style="background:#22c55e"></span> CO₂ vs Renewables
+                </div>
+            </section>
+
+            <div class="h-[1px] bg-white/10"></div>
+
+            <section>
+                <label id="snapLabel" class="mono text-[10px] text-[#94a3b8] tracking-widest uppercase block mb-3 text-center">Snapshot · 2010</label>
+                
+                <div class="stat-card p-3 mb-3 flex gap-4">
+                    <div class="w-1 bg-[#ef4444] rounded"></div>
+                    <div>
+                        <div class="mono text-[9px] text-[#94a3b8] uppercase tracking-tighter">CO₂ Emissions</div>
+                        <div id="stat-co2" class="mono text-xl font-medium text-[#f1f5f9]">0.00</div>
+                        <div class="mono text-[9px] text-[#94a3b8]">Million Tonnes</div>
+                    </div>
+                </div>
+
+                <div class="stat-card p-3 flex gap-4">
+                    <div id="accent-dynamic" class="w-1 bg-[#facc15] rounded"></div>
+                    <div>
+                        <div id="lbl-dynamic" class="mono text-[9px] text-[#94a3b8] uppercase tracking-tighter">Fossil Fuel Use</div>
+                        <div id="val-dynamic" class="mono text-xl font-medium text-[#f1f5f9]">0.00</div>
+                        <div id="unit-dynamic" class="mono text-[9px] text-[#94a3b8]">Quadrillion BTU</div>
+                    </div>
+                </div>
+            </section>
+        </aside>
+
+        <section class="flex-1 bg-[#06090e] p-6">
+            <div id="chart" class="w-full h-full"></div>
+        </section>
+    </main>
+
+    <footer class="px-8 py-4 border-t border-white/10 flex justify-between bg-[#06090e]">
+        <span class="mono text-[10px] text-[#94a3b8] uppercase tracking-widest">Sources: IEA Energy Stats · EIA · Our World In Data</span>
+        <span class="mono text-[10px] text-[#94a3b8] uppercase tracking-widest">Interactive Dashboard (V1.0)</span>
+    </footer>
+
+    <script>
+        const COLORS = { co2: '#ef4444', fossil: '#facc15', renew: '#22c55e', bg: '#06090e', border: 'rgba(255, 255, 255, 0.08)', grid: 'rgba(255, 255, 255, 0.05)', text: '#94a3b8' };
+        let currentMode = 'co2_vs_fossil';
+
+        const select = document.getElementById('countrySelect');
+        const slider = document.getElementById('yearSlider');
+        const yearDisplay = document.getElementById('yearDisplay');
+
+        // Initial setup
+        function init() {
+            const countries = [...new Set(energyData.map(d => d.Country))].sort();
+            countries.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = opt.textContent = c;
+                select.appendChild(opt);
+            });
+            select.value = "China"; // Default
+
+            update();
+        }
+
+        function update() {
+            const country = select.value;
+            const year = parseInt(slider.value);
+            yearDisplay.textContent = year;
+            document.getElementById('snapLabel').textContent = `Snapshot · ${year}`;
+
+            const fullCountryData = energyData.filter(d => d.Country === country).sort((a,b) => a.year - b.year);
+            const snapshot = fullCountryData.find(d => d.year === year) || fullCountryData[fullCountryData.length -1];
+
+            // Update Stats
+            document.getElementById('stat-co2').textContent = snapshot.co2_mt.toLocaleString(undefined, {minimumFractionDigits: 2});
+            
+            if (currentMode === 'co2_vs_fossil') {
+                document.getElementById('accent-dynamic').style.backgroundColor = COLORS.fossil;
+                document.getElementById('lbl-dynamic').textContent = "Fossil Fuel Use";
+                document.getElementById('val-dynamic').textContent = (snapshot.total_fossil_fuel_consumption_tj / 1055060).toFixed(3);
+                document.getElementById('unit-dynamic').textContent = "Quadrillion BTU";
+            } else {
+                document.getElementById('accent-dynamic').style.backgroundColor = COLORS.renew;
+                document.getElementById('lbl-dynamic').textContent = "Renewable Share";
+                document.getElementById('val-dynamic').textContent = snapshot.renewable_share_pct.toFixed(1) + "%";
+                document.getElementById('unit-dynamic').textContent = "% of Primary Energy";
+            }
+
+            drawChart(fullCountryData, year);
+        }
+
+        function drawChart(data, selectedYear) {
+            const years = data.map(d => d.year);
+            const co2 = data.map(d => d.co2_mt);
+            
+            const trace1 = {
+                x: years, y: co2, name: 'CO2 (Mt)',
+                type: 'scatter', mode: 'lines+markers',
+                line: { color: COLORS.co2, width: 3 },
+                marker: { size: 4 },
+                fill: 'tozeroy', fillcolor: 'rgba(239, 68, 68, 0.1)'
+            };
+
+            let trace2;
+            let yaxis2_title;
+
+            if (currentMode === 'co2_vs_fossil') {
+                trace2 = {
+                    x: years, y: data.map(d => d.total_fossil_fuel_consumption_tj / 1055060),
+                    name: 'Fossil (QBTU)', yaxis: 'y2',
+                    type: 'scatter', mode: 'lines+markers',
+                    line: { color: COLORS.fossil, width: 2 }
+                };
+                yaxis2_title = 'Fossil (QBTU)';
+            } else {
+                trace2 = {
+                    x: years, y: data.map(d => d.renewable_share_pct),
+                    name: 'Renewable %', yaxis: 'y2',
+                    type: 'scatter', mode: 'lines+markers',
+                    line: { color: COLORS.renew, width: 2 },
+                    fill: 'tozeroy', fillcolor: 'rgba(34, 197, 94, 0.05)'
+                };
+                yaxis2_title = 'Renewable Share (%)';
+            }
+
+            const layout = {
+                paper_bgcolor: COLORS.bg, plot_bgcolor: COLORS.bg,
+                margin: { t: 40, b: 40, l: 60, r: 60 },
+                showlegend: true,
+                legend: { x: 0, y: 1.1, orientation: 'h', font: { color: COLORS.text, size: 10 } },
+                xaxis: { 
+                    gridcolor: COLORS.grid, tickcolor: COLORS.grid, 
+                    tickfont: { color: '#94a3b8', size: 10 },
+                    range: [1990, 2023]
+                },
+                yaxis: { 
+                    title: 'CO₂ (Mt)', titlefont: { color: COLORS.co2, size: 11 },
+                    gridcolor: COLORS.grid, tickfont: { color: COLORS.co2 },
+                    side: 'left'
+                },
+                yaxis2: {
+                    title: yaxis2_title, titlefont: { color: (currentMode === 'co2_vs_fossil' ? COLORS.fossil : COLORS.renew), size: 11 },
+                    tickfont: { color: (currentMode === 'co2_vs_fossil' ? COLORS.fossil : COLORS.renew) },
+                    overlaying: 'y', side: 'right'
+                },
+                shapes: [{
+                    type: 'line', x0: selectedYear, x1: selectedYear, y0: 0, y1: 1,
+                    yref: 'paper', line: { color: '#ffffff', width: 1, dash: 'dash' }
+                }]
+            };
+
+            Plotly.newPlot('chart', [trace1, trace2], layout, { responsive: true, displayModeBar: false });
+        }
+
+        // Event Listeners
+        select.addEventListener('change', update);
+        slider.addEventListener('input', update);
+        
+        document.querySelectorAll('.mode-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentMode = tab.dataset.mode;
+                update();
+            });
+        });
+
+        window.onload = init;
+    </script>
+</body>
+</html>

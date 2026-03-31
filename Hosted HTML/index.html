@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Climate Dashboards</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --text-color: #c9d1d9;
+            --header-bg: #161b22;
+            --tab-active-bg: #238636;
+            --tab-hover-bg: #21262d;
+            --border-color: #30363d;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow: hidden;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 60px;
+            background-color: var(--header-bg);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+            position: relative;
+        }
+
+        .controls-container {
+            display: flex;
+            gap: 8px;
+            background-color: #010409;
+            padding: 6px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            background-color: transparent;
+            color: var(--text-color);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background-color: var(--tab-hover-bg);
+            color: white;
+        }
+
+        .tab-btn.active {
+            background-color: var(--tab-active-bg);
+            color: white;
+            box-shadow: 0 0 10px rgba(35, 134, 54, 0.4);
+        }
+
+        .content-frame {
+            width: 100%;
+            height: calc(100vh - 61px); /* Viewport height minus header height and border */
+            border: none;
+            display: block;
+        }
+        
+        .title-container {
+            position: absolute;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .app-logo {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #238636, #2ea043);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .title {
+            font-weight: 600;
+            font-size: 16px;
+            color: white;
+            letter-spacing: 0.5px;
+        }
+        
+        @media (max-width: 768px) {
+            .title-container {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="title-container">
+            <div class="app-logo">C</div>
+            <div class="title">Climate Insights</div>
+        </div>
+        <div class="controls-container">
+            <button class="tab-btn active" onclick="switchDashboard('Illusion_of_Climate_Progress_Dashboard.html', this)">
+                Progress Illusion
+            </button>
+            <button class="tab-btn" onclick="switchDashboard('carbon_emissions_explorer.html', this)">
+                Emissions Explorer
+            </button>
+            <button class="tab-btn" onclick="switchDashboard('https://carbonfootprint2023.netlify.app/', this)">
+                Carbon Footprint
+            </button>
+        </div>
+    </div>
+
+    <iframe id="dashboard-frame" class="content-frame" src="Illusion_of_Climate_Progress_Dashboard.html" title="Dashboard View"></iframe>
+
+    <script>
+        function switchDashboard(url, btnElement) {
+            // Update iframe source
+            document.getElementById('dashboard-frame').src = url;
+            
+            // Update active state on buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            btnElement.classList.add('active');
+        }
+    </script>
+</body>
+</html>
