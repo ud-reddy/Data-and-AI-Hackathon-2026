@@ -33,19 +33,16 @@ Open in any modern browser - no installation required.
 ## 🧩 Project Structure
 
 ```
-Carbon-Reality-Project/
+Data-and-AI-Hackathon-2026/
 │
-├── Illusion_of_Climate_Progress_Dashboard.html   ← Main interactive dashboard
-├── generator.py                                   ← Data pipeline script
-├── data/                                          ← Processed master datasets
-│   ├── ULTIMATE_EMISSIONS_MASTER_1990_2023.csv
-│   ├── MASTER_FOSSIL_FUELS_CONSUMPTION_1990_2023.csv
-│   ├── FINAL_MASTER_ENERGY_CO2_1990_2023.csv
-│   └── country_average_renew_emissions_stats.csv
-└── raw/                                           ← Source EIA CSV files (386 files)
+├── Datasets Used/                          ← Source datasets used in the project
+│
+├── Hosted HTML/                            ← The interactive dashboard HTML file
+│
+├── Python Notebooks Used/                  ← Jupyter notebooks for data pipeline & analysis
+│
+└── README.md                               ← Project documentation
 ```
-
----
 
 ## 🔹 Segment 1 - Carbon Footprint Visual (Conceptual Layer)
 
