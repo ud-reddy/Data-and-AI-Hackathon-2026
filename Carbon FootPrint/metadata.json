@@ -1,0 +1,5 @@
+{
+  "name": "Global Carbon Footprint Visualizer",
+  "description": "An interactive visualization of global CO2 emissions and per capita data, styled as a footprint layout using circle packing.",
+  "requestFramePermissions": []
+}
