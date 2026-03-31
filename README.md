@@ -33,19 +33,16 @@ Open in any modern browser - no installation required.
 ## 🧩 Project Structure
 
 ```
-Carbon-Reality-Project/
+Data-and-AI-Hackathon-2026/
 │
-├── Illusion_of_Climate_Progress_Dashboard.html   ← Main interactive dashboard
-├── generator.py                                   ← Data pipeline script
-├── data/                                          ← Processed master datasets
-│   ├── ULTIMATE_EMISSIONS_MASTER_1990_2023.csv
-│   ├── MASTER_FOSSIL_FUELS_CONSUMPTION_1990_2023.csv
-│   ├── FINAL_MASTER_ENERGY_CO2_1990_2023.csv
-│   └── country_average_renew_emissions_stats.csv
-└── raw/                                           ← Source EIA CSV files (386 files)
+├── Datasets Used/                          ← Source datasets used in the project
+│
+├── Hosted HTML/                            ← The interactive dashboard HTML file
+│
+├── Python Notebooks Used/                  ← Jupyter notebooks for data pipeline & analysis
+│
+└── README.md                               ← Project documentation
 ```
-
----
 
 ## 🔹 Segment 1 - Carbon Footprint Visual (Conceptual Layer)
 
@@ -220,9 +217,7 @@ git clone <your-repo-url>
 cd carbon-reality-project
 
 # Open the dashboard directly in your browser
-open Illusion_of_Climate_Progress_Dashboard.html
-# or on Windows:
-start Illusion_of_Climate_Progress_Dashboard.html
+Hosted HTML - index.html
 ```
 
 ### Option 3 - Rebuild the Data Pipeline
@@ -233,19 +228,14 @@ If you want to regenerate the master datasets from raw EIA files:
 - Python 3.10+
 - [uv](https://github.com/astral-sh/uv) package manager
 
-**Dependencies:** `pandas`, `numpy`
+**Dependencies:** `pandas`, `numpy` 
 
 ```bash
 # Install uv (if not already installed)
 curl -Lsf https://astral.sh/uv/install.sh | sh
 
-# Run the pipeline
-uv run --with pandas numpy python generator.py
 ```
 
-This will regenerate all master CSV files in the `data/` directory.
-
----
 
 ## 🚨 Key Takeaways
 
@@ -258,6 +248,16 @@ This will regenerate all master CSV files in the `data/` directory.
 ---
 
 ## 👥 Team
+
+| Name | Email |
+|------|-------|
+| Krithik Sharan Suresh Alagianayagi | mxnp0398@leeds.ac.uk |
+| Uday Kiran Reddy Mule | gfqr0053@leeds.ac.uk |
+| Haritej Karimisetti | tctn0725@leeds.ac.uk |
+| Asjad Moiz Khan | gfqs0308@leeds.ac.uk |
+
+**Programme:** MSc Data Science and Analytics
+**Institution:** University of Leeds
 
 Submitted to the **Data & AI Hackathon 2026**, University of Leeds
 Track 2: Earth, Environment & Climate
