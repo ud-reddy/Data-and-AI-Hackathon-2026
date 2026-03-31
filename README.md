@@ -3,6 +3,7 @@
 
 **Submission for:** Data & AI Hackathon 2026 - University of Leeds
 **Track:** Track 2 - Earth, Environment & Climate
+
 **Live Dashboard:** https://illusionofclimateprogression.netlify.app/
 
 ---
